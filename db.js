@@ -24,6 +24,12 @@ const sync = async()=> {
     createUser({ username: 'ered'}),
     createUser({ username: 'c_orange', firstName:'cody', lastName: 'orange' }),
   ]);
+  return {
+    lucy,
+    moe,
+    ethyl,
+    cody
+  };
 };
 
 const createUser = async({ firstName, lastName, username })=> {
@@ -55,10 +61,15 @@ const readUser = async(username)=> {
   return (await client.query('SELECT * FROM users WHERE username=$1', [username])).rows[0];
 };
 
+const destroyUser = async(id)=> {
+  await client.query('DELETE FROM users WHERE id=$1', [id]);
+};
+
 module.exports = {
   createUser,
   readUsers,
   readUser,
   updateUser,
+  destroyUser,
   sync
 };

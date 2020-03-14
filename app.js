@@ -17,6 +17,12 @@ app.post('/api/users', (req, res, next)=> {
     .catch(next);
 });
 
+app.delete('/api/users/:id', async(req, res, next)=> {
+  db.destroyUser(req.params.id)
+    .then(()=> res.sendStatus(204))
+    .catch(next);
+});
+
 app.use((err, req, res, next)=> {
   res.status(500).send({ message: err.message });
 });

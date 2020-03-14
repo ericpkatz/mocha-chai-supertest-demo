@@ -5,7 +5,10 @@ const app = require('supertest')(require('../app'));
 const db = require('../db');
 const { updateUser, readUser, readUsers } = db;
 describe('my application', ()=> {
-  beforeEach(()=> db.sync());
+  let seed;
+  beforeEach(async()=> {
+    seed = await db.sync();
+  });
   describe('routes', ()=> {
 
     describe('GET /api/users', ()=> {
@@ -13,6 +16,13 @@ describe('my application', ()=> {
         const response = await app.get('/api/users');
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(4);
+      });
+    });
+
+    describe('DELETE /api/users/:id', ()=> {
+      it('destroys the user', async()=> {
+        const response = await app.delete(`/api/users/${seed.lucy.id}`);
+        expect(response.status).to.equal(204);
       });
     });
     describe('POST /api/users', ()=> {
@@ -65,12 +75,12 @@ describe('my application', ()=> {
   });
 
   describe('data layer', ()=> {
-    it('there are 4 seeded users', async()=> {
-      const users = await db.readUsers();
-      expect(users.length).to.equal(4);
+    it('there are 4 seeded users', ()=> {
+      //const users = await db.readUsers();
+      expect(Object.keys(seed).length).to.equal(4);
     });
     it('a user can be updated', async()=> {
-      let lucy = await readUser('l_blue');
+      let lucy = seed.lucy;
       lucy = await updateUser({ id: lucy.id, username: 'lucy_username'});
       expect(lucy.username).to.equal('lucy_username');
     });
