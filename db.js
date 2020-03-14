@@ -11,9 +11,10 @@ const sync = async()=> {
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       "firstName" VARCHAR(100),
       "lastName" VARCHAR(100),
-      username VARCHAR(100),
+      username VARCHAR(100) UNIQUE,
       "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      "updatedAt" TIMESTAMP
+      "updatedAt" TIMESTAMP,
+      CHECK (char_length(username) > 0)
     );
   `;
   await client.query(SQL);
@@ -55,6 +56,7 @@ const readUser = async(username)=> {
 };
 
 module.exports = {
+  createUser,
   readUsers,
   readUser,
   updateUser,
